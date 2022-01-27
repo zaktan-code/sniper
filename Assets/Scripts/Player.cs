@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour {
 
@@ -87,7 +88,7 @@ public class Player : MonoBehaviour {
                 break;
             case PlayerState.Aiming:
                 setAimingWhenStop = false;
-                if (Input.GetMouseButton(0)) {
+                if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
                     if (readyToShoot) {
                         Shoot();
                     }

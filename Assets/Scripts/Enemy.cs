@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
+    [SerializeField]
+    private GameObject hitEffect;
+
     private Animator animator;
     private Rigidbody mainRigidbody;
     private Collider mainCollider;
@@ -32,7 +35,8 @@ public class Enemy : MonoBehaviour {
             if (rigidbody == mainRigidbody) {
                 continue;
             }
-            rigidbody.gameObject.AddComponent<EnemyBodyPart>();
+            EnemyBodyPart enemyBodyPart = rigidbody.gameObject.AddComponent<EnemyBodyPart>();
+            enemyBodyPart.SetHitEffect(hitEffect);
         }
     }
 
@@ -52,7 +56,7 @@ public class Enemy : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Bullet") {
             ToggleRagdoll(true);
-            if (!FirstBodyPartHit(collision.GetContact(0).point, collision.GetContact(0).normal)) {
+            if (!FirstBodyPartHit(collision.GetContact(0).point, collision.GetContact(0).normal, collision.gameObject.GetComponent<Bullet>().Direction)) {
                 ToggleRagdoll(false);
             }
             else {
@@ -61,13 +65,13 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    private bool FirstBodyPartHit(Vector3 point, Vector3 normal) {
-        Ray ray = new Ray(point, normal);
+    private bool FirstBodyPartHit(Vector3 point, Vector3 collisionNormal, Vector3 hitNormal) {
+        Ray ray = new Ray(point, collisionNormal);
         RaycastHit raycastHit;
         if (Physics.Raycast(ray, out raycastHit)) {
             EnemyBodyPart enemyBodyPart = raycastHit.collider.gameObject.GetComponent<EnemyBodyPart>();
             if (enemyBodyPart != null) {
-                enemyBodyPart.Hit(raycastHit.normal, raycastHit.point);
+                enemyBodyPart.Hit(hitNormal, raycastHit.point);
                 return true;
             }
         }

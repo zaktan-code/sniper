@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 class GameManager : MonoBehaviour {
 	
@@ -15,6 +16,10 @@ class GameManager : MonoBehaviour {
 		else if (instance == this) {
 			Destroy(gameObject);
 		}
+	}
+
+	public void Reset() {
+		SceneManager.LoadScene("Game");
 	}
 
 }
